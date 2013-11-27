@@ -8,11 +8,11 @@ support hbase version : 0.94.*
 
 Execute:
 
-    $ wget --no-check-certificate https://codeload.github.com/bit-ware/HBaseShellPro/zip/branch/0.94
-    $ unzip master
-    $ mv HBaseShellPro-branch-0.94 HBaseShellPro
+    $ wget --no-check-certificate https://github.com/bit-ware/HBaseShellPro/archive/0.94.zip
+    $ unzip 0.94
+    $ mv HBaseShellPro-0.94 HBaseShellPro
     $ cd HBaseShellPro/
-    $ vi /etc/hosts    -- add  172.17.1.xx  namenode  host.
+    $ vi /etc/hosts    -- add hbase quorum address:  172.17.1.xx  namenode
     $ chmod +x run.rb
     $ ./run.rb
 
