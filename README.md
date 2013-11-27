@@ -7,6 +7,9 @@ HBase 0.94.* Branch: <br />
 <https://github.com/bit-ware/HBaseShellPro/tree/0.94>
 
 
+![Screenshot](https://raw.github.com/bit-ware/HBaseShellPro/master/resource/1.PNG "Screenshot")
+
+
 ## Installation
 
 Execute:
