@@ -54,7 +54,7 @@ public class ResultLog {
         }
 
         if (!quiet) {
-            logger_result().info(string);
+        logger_result().info(string);
         }
 
         appendToLogFile(string);

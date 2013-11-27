@@ -41,7 +41,6 @@ public abstract class TaskBase implements Task {
         QUIT,
         RENAME,
         READONLY,
-        REG_DELETE,
         SCAN,
         VERSION,
     }
@@ -114,7 +113,7 @@ public abstract class TaskBase implements Task {
             return;
         }
 
-        resetAllCount();
+        HBaseShellPro.resetAllCount();
 
         try {
             log.setQuiet(quiet);
@@ -142,7 +141,7 @@ public abstract class TaskBase implements Task {
         this.notifyEnabled = false;
 
         try {
-            confirm();
+            execute();
         } catch (HBSExceptionRowLimitReached e) {
             // OK
         } catch (HBSException e) {
@@ -156,10 +155,6 @@ public abstract class TaskBase implements Task {
         System.out.print("******************************\n");
 
         return confirmed;
-    }
-
-    public void resetAllCount() {
-        HBaseShellPro.resetAllCount();
     }
 
     protected void changeLogOnStart() {
@@ -253,11 +248,6 @@ public abstract class TaskBase implements Task {
         log.info("---------------------------------------");
     }
 
-    public void confirm()
-    throws IOException, HBSException {
-        execute();
-    }
-
     public void execute()
     throws IOException, HBSException {
         new TNodeDatabase(this, isToOutput()).handle();
@@ -303,13 +293,6 @@ public abstract class TaskBase implements Task {
         forced = string.endsWith("!");
 
         if (forced) {
-            string = string.substring(0, string.length() - 1);
-        }
-
-        // check if quiet
-        quiet = string.endsWith("-");
-
-        if (quiet) {
             string = string.substring(0, string.length() - 1);
         }
 

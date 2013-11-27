@@ -15,18 +15,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 
-import common.OemInfo;
+import common.LogHelper;
+
 
 public class Utils {
     private static final String UTF_8 = "UTF-8";
@@ -271,11 +272,22 @@ public class Utils {
     // hbase
     //
 
-    private static final String       HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
-    private static final int          MAX_VERSIONS           = 1;
-    private static HBaseConfiguration m_hBaseConfiguration   = null;
+    private static final String  HBASE_CONF_FILE        = "./conf/hbase-site.xml";
+    private static final String  HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
+    private static final int     MAX_VERSIONS           = 1;
+    private static Configuration m_hBaseConfiguration   = null;
+    private static HBaseAdmin    admin                  = null;
 
-    public static HBaseConfiguration conf() {
+    public static HBaseAdmin admin()
+    throws IOException {
+        if (admin == null) {
+            admin = new HBaseAdmin(conf());
+        }
+
+        return admin;
+    }
+
+    public static Configuration conf() {
         if (m_hBaseConfiguration == null) {
             setDefaultHBaseConfiguration();
         }
@@ -290,17 +302,29 @@ public class Utils {
     public static void setQuorums(String quorums) {
         setDefaultHBaseConfiguration();
         m_hBaseConfiguration.set(HBASE_ZOOKEEPER_QUORUM, quorums);
+        admin = null;
+
+		LogHelper.getLog().info("reset quorums:" + quorums);
+
+        try {
+        	//recreate instance
+			admin();
+		} catch (IOException e) {
+			LogHelper.getLog().info("reset quorums");
+			e.printStackTrace();
+		}
     }
 
     private static void setDefaultHBaseConfiguration() {
-        m_hBaseConfiguration = new HBaseConfiguration();
-        m_hBaseConfiguration.addResource(new Path(OemInfo.hbaseUrl()));
+        Configuration configuration = new Configuration();
+        configuration.addResource(new Path(HBASE_CONF_FILE));
+
+        m_hBaseConfiguration = HBaseConfiguration.create(configuration);
     }
 
     public static HTableDescriptor[] listTables()
     throws IOException {
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
-        return hBaseAdmin.listTables();
+        return admin().listTables();
     }
 
     // tableName
@@ -311,9 +335,8 @@ public class Utils {
     }
 
     public static boolean tableExists(String tableName)
-    throws MasterNotRunningException {
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
-        return hBaseAdmin.tableExists(tableName);
+    throws IOException {
+        return admin().tableExists(tableName);
     }
 
     public static void createTable(String tableName, List< ? > families)
@@ -332,14 +355,14 @@ public class Utils {
 
     public static void createTable(HTableDescriptor tableDescriptor)
     throws IOException {
-        new HBaseAdmin(conf()).createTable(tableDescriptor);
+        admin().createTable(tableDescriptor);
     }
 
     public static void deleteTable(String tableName)
     throws IOException {
         RootLog.getLog().info(tableName);
 
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(conf());
+        HBaseAdmin hBaseAdmin = admin();
 
         if (hBaseAdmin.tableExists(tableName)) {
             hBaseAdmin.disableTable(tableName);

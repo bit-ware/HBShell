@@ -1,17 +1,18 @@
-# HBaseShellPro
+# HBaseShellPro for 0.94.*
 
-A simple but powerful replacement for ./hbase shell
-support hbase version : 0.20.4
+A simple but powerful replacement for ./hbase shell <br />
+support hbase version : 0.94.*
 
 
 ## Installation
 
 Execute:
 
-    $ wget --no-check-certificate https://codeload.github.com/bit-ware/HBaseShellPro/zip/master
+    $ wget --no-check-certificate https://codeload.github.com/bit-ware/HBaseShellPro/zip/branch/0.94
     $ unzip master
-    $ mv HBaseShellPro-master HBaseShellPro
+    $ mv HBaseShellPro-branch-0.94 HBaseShellPro
     $ cd HBaseShellPro/
+    $ vi /etc/hosts    -- add  172.17.1.xx  namenode  host.
     $ chmod +x run.rb
     $ ./run.rb
 

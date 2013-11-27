@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/freeflare/!svn/ver/307/trunk/foundation/ops/HBShell/conf
+END
+config.ini
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/freeflare/!svn/ver/307/trunk/foundation/ops/HBShell/conf/config.ini
+END
+hbase-site.xml
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/freeflare/!svn/ver/307/trunk/foundation/ops/HBShell/conf/hbase-site.xml
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/freeflare/!svn/ver/307/trunk/foundation/ops/HBShell/conf/log4j.properties
+END

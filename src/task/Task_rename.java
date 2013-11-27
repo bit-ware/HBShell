@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HRegionInfo;
@@ -23,6 +23,7 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.regionserver.HRegion;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.hbase.util.FSTableDescriptors;
 import org.apache.hadoop.hbase.util.FSUtils;
 import org.apache.hadoop.hbase.util.Writables;
 
@@ -69,22 +70,28 @@ public class Task_rename extends TaskBase {
     @Override
     public void execute()
     throws IOException {
+        boolean testSuccess = false;
+
+        if (!testSuccess) {
+            throw new IOException("Rename function test failed, needs to be implemneted in new version");
+        }
+
         List< ? > tableNames = (List< ? >)levelParam.get(Level.TABLE);
 
         String oldTableName = (String) tableNames.get(0);
         String newTableName = (String) tableNames.get(1);
 
-        HBaseAdmin hBaseAdmin = new HBaseAdmin(Utils.conf());
+        HBaseAdmin hBaseAdmin = Utils.admin();
 
         hBaseAdmin.disableTable(oldTableName);
         renameTable(oldTableName, newTableName);
-        hBaseAdmin.enableTable(newTableName);
+        // hBaseAdmin.enableTable(newTableName);
     }
 
     private void renameTable(String oldTableName, String newTableName)
     throws IOException {
         // Get configuration to use.
-        HBaseConfiguration c = Utils.conf();
+        Configuration c = Utils.conf();
 
         // Set hadoop filesystem configuration using the hbase.rootdir.
         // Otherwise, we'll always use localhost though the hbase.rootdir
@@ -107,52 +114,55 @@ public class Task_rename extends TaskBase {
         }
 
         // Run through the meta table moving region mentions from old to new table name.
-        HTable metaTable = new HTable(c, HConstants.META_TABLE_NAME);
+        HTable        metaTable = new HTable(c, HConstants.META_TABLE_NAME);
+        Scan          scan      = new Scan();
+        ResultScanner scanner   = metaTable.getScanner(scan);
 
-        Scan          scan    = new Scan();
-        ResultScanner scanner = metaTable.getScanner(scan);
+        try {
+            for (Result result : scanner) {
+                String      rowID  = Bytes.toString(result.getRow());
+                HRegionInfo oldHRI = Writables.getHRegionInfo(result.getValue(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER));
 
-        for (Result result : scanner) {
-            String      rowID  = Bytes.toString(result.getRow());
-            HRegionInfo oldHRI = Writables.getHRegionInfo(result.getValue(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER));
+                if (oldHRI == null) {
+                    throw new IOException("HRegionInfo is null for " + rowID);
+                }
 
-            if (oldHRI == null) {
-                throw new IOException("HRegionInfo is null for " + rowID);
+                if (!isTableRegion(oldTableName, oldHRI)) {
+                    continue;
+                }
+
+                Path oldRDir = new Path(oldTableDir, new Path(String.valueOf(oldHRI.getEncodedName())));
+
+                if (!fs.exists(oldRDir)) {
+                    log.warn(oldRDir.toString() + " does not exist -- region " + oldHRI.getRegionNameAsString());
+                } else {
+                    // Now make a new HRegionInfo to add to .META. for the new region.
+                    HRegionInfo newHRI  = createHRI(c, fs, newTableName, oldHRI);
+                    Path        newRDir = new Path(newTableDir, new Path(String.valueOf(newHRI.getEncodedName())));
+
+                    // Move the region in filesystem
+                    fs.rename(oldRDir, newRDir);
+
+                    // Removing old region from meta
+                    Delete d = new Delete(result.getRow());
+                    metaTable.delete(d);
+
+                    // Create 'new' region
+                    HRegion newR = new HRegion(rootDir, null, fs, c, newHRI, null, null);
+
+                    // Add new row. NOTE: Presumption is that only one .META. region. If not,
+                    // need to do the work to figure proper region to add this new region to.
+                    Put p = new Put(newR.getRegionName());
+                    p.add(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER, Writables.getBytes(newR.getRegionInfo()));
+                    metaTable.put(p);
+                }
             }
 
-            if (!isTableRegion(oldTableName, oldHRI)) {
-                continue;
-            }
-
-            Path oldRDir = new Path(oldTableDir, new Path(String.valueOf(oldHRI.getEncodedName())));
-
-            if (!fs.exists(oldRDir)) {
-                log.warn(oldRDir.toString() + " does not exist -- region " + oldHRI.getRegionNameAsString());
-            } else {
-                // Now make a new HRegionInfo to add to .META. for the new region.
-                HRegionInfo newHRI  = createHRI(newTableName, oldHRI);
-                Path        newRDir = new Path(newTableDir, new Path(String.valueOf(newHRI.getEncodedName())));
-
-                // Move the region in filesystem
-                fs.rename(oldRDir, newRDir);
-
-                // Removing old region from meta
-                Delete d = new Delete(result.getRow());
-                metaTable.delete(d);
-
-                // Create 'new' region
-                HRegion newR = new HRegion(rootDir, null, fs, c, newHRI, null);
-
-                // Add new row. NOTE: Presumption is that only one .META. region. If not,
-                // need to do the work to figure proper region to add this new region to.
-                Put p = new Put(newR.getRegionName());
-                p.add(HConstants.CATALOG_FAMILY, HConstants.REGIONINFO_QUALIFIER, Writables.getBytes(newR.getRegionInfo()));
-                metaTable.put(p);
-            }
+            fs.delete(oldTableDir, true);
+        } finally {
+            scanner.close();
+            metaTable.close();
         }
-
-        scanner.close();
-        fs.delete(oldTableDir, true);
     }
 
     // Passed 'dir' exists and is a directory else exception
@@ -175,18 +185,26 @@ public class Task_rename extends TaskBase {
 
     // Returns true if the region belongs to passed table
     private boolean isTableRegion(String tableName, HRegionInfo hri) {
-        return Bytes.equals(hri.getTableDesc().getName(), str2bytes(tableName));
+        return Bytes.equals(hri.getTableName(), str2bytes(tableName));
     }
 
     // Create new HRI based off passed 'oldHRI'
-    private HRegionInfo createHRI(String tableName, HRegionInfo oldHRI) {
-        HTableDescriptor htd    = oldHRI.getTableDesc();
+    private HRegionInfo createHRI(Configuration c, FileSystem fs, String tableName, HRegionInfo oldHRI)
+    throws IOException {
+        HTableDescriptor htd    = getTableDesc(c, fs, oldHRI);
         HTableDescriptor newHtd = new HTableDescriptor(tableName);
 
         for (HColumnDescriptor family : htd.getFamilies()) {
             newHtd.addFamily(family);
         }
 
-        return new HRegionInfo(newHtd, oldHRI.getStartKey(), oldHRI.getEndKey(), oldHRI.isSplit());
+        return new HRegionInfo(str2bytes(tableName), oldHRI.getStartKey(), oldHRI.getEndKey(), oldHRI.isSplit());
+    }
+
+    // implementation of deprecated getTableDesc
+    private HTableDescriptor getTableDesc(Configuration c, FileSystem fs, HRegionInfo hri)
+    throws IOException {
+        FSTableDescriptors fstd = new FSTableDescriptors(fs, new Path(c.get("hbase.rootdir")));
+        return fstd.get(hri.getTableName());
     }
 }

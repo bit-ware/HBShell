@@ -62,15 +62,15 @@ public class TNodeTable extends TNodeBase {
             ResultScanner resultScanner = table.getScanner(scan);
 
             try {
-                for (Result firstKVResult : resultScanner) {
-                    new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
+            for (Result firstKVResult : resultScanner) {
+                new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
 
-                    // check row limit
-                    if (HBaseShellPro.getCount(HBaseShellPro.ROW) >= TaskBase.getRowLimit()) {
-                        throw new HBSExceptionRowLimitReached();
-                    }
+                // check row limit
+                if (HBaseShellPro.getCount(HBaseShellPro.ROW) >= TaskBase.getRowLimit()) {
+                    throw new HBSExceptionRowLimitReached();
                 }
-            } finally {
+            }
+        } finally {
                 IOUtils.closeQuietly(resultScanner);
             }
         } finally {

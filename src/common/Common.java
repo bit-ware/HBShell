@@ -3,7 +3,6 @@ package common;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,10 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -493,33 +490,4 @@ public class Common {
         return timeBasedUUID(true);
     }
 
-    //
-    // other
-    //
-
-    public static Map<String, String[]> getQueryParameterMap(String queryString)
-    throws UnsupportedEncodingException {
-        if (queryString == null) {
-            return null;
-        }
-
-        Map<String, String[]> retMap = new HashMap<String, String[]>();
-
-        for (String parameter : queryString.split("&")) {
-            String[] parts = parameter.split("=");
-            String name  = URLDecoder.decode(parts[0], Common.UTF_8);
-            String value = null;
-
-            try {
-                value = URLDecoder.decode(parts[1], Common.UTF_8);
-            } catch (Exception e) {
-                LogHelper.getLog().warn(null, e);
-            }
-
-            String[] v = {value};
-            retMap.put(name, v);
-        }
-
-        return retMap;
-    }
 }
