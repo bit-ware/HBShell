@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import exception.HBSException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import task.TaskBase;
 import task.TaskBase.Level;
@@ -24,7 +24,7 @@ public class TNodeQualifierOmit extends TNodeBase {
 
     @Override
     protected String formatString() {
-        return HBShell.format_qualifierOmit;
+        return HBaseShellPro.format_qualifierOmit;
     }
 
     @Override
@@ -32,8 +32,8 @@ public class TNodeQualifierOmit extends TNodeBase {
     throws IOException, HBSException {
         long count = lastIndex - firstIndex - 1;
 
-        HBShell.increaseCount(HBShell.QUALIFIER, count);
-        HBShell.increaseCount(HBShell.VALUE, count);
+        HBaseShellPro.increaseCount(HBaseShellPro.QUALIFIER, count);
+        HBaseShellPro.increaseCount(HBaseShellPro.VALUE, count);
 
         output();
     }

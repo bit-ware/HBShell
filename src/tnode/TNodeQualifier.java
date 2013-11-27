@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import exception.HBSException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import task.TaskBase;
 import task.TaskBase.Level;
@@ -20,14 +20,14 @@ public class TNodeQualifier extends TNodeBase {
 
     @Override
     protected String formatString() {
-        return HBShell.format_qualifier;
+        return HBaseShellPro.format_qualifier;
     }
 
     @Override
     public void output()
     throws IOException, HBSException {
         if (!outputted) {
-            HBShell.increaseCount(HBShell.QUALIFIER);
+            HBaseShellPro.increaseCount(HBaseShellPro.QUALIFIER);
         }
 
         super.output();

@@ -5,7 +5,7 @@ import java.util.NavigableMap;
 
 import exception.HBSException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import task.TaskBase;
 import task.TaskBase.Level;
@@ -22,14 +22,14 @@ public class TNodeFamily extends TNodeBase {
 
     @Override
     protected String formatString() {
-        return HBShell.format_family;
+        return HBaseShellPro.format_family;
     }
 
     @Override
     public void output()
     throws IOException, HBSException {
         if (!outputted) {
-            HBShell.increaseCount(HBShell.FAMILY);
+            HBaseShellPro.increaseCount(HBaseShellPro.FAMILY);
         }
 
         super.output();

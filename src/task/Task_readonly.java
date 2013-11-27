@@ -2,7 +2,7 @@ package task;
 
 import java.io.IOException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 public class Task_readonly extends TaskBase {
     @Override
@@ -56,12 +56,12 @@ public class Task_readonly extends TaskBase {
 
     private void outputReadonlyStatus()
     throws IOException {
-        log.info("Current readonly status: " + HBShell.readonly);
+        log.info("Current readonly status: " + HBaseShellPro.readonly);
     }
 
     private void setReadonlyStatus(String status)
     throws IOException {
-        HBShell.readonly = Boolean.valueOf(status);
+        HBaseShellPro.readonly = Boolean.valueOf(status);
         outputReadonlyStatus();
     }
 }

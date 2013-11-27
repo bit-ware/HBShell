@@ -5,10 +5,10 @@ import java.io.IOException;
 import utils.Utils;
 import utils.Utils.FoundLine;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 public class Task_history extends TaskBase {
-    private int    count   = (int)(HBShell.defaultHistoryCount + 0);
+    private int    count   = (int)(HBaseShellPro.defaultHistoryCount + 0);
     private int    cnt     = 0;
     private String pattern = null;
 
@@ -75,7 +75,7 @@ public class Task_history extends TaskBase {
 
         // search history file from end
         try {
-            Utils.searchFileFromEnd(HBShell.HISTORY_FILE, foundLine);
+            Utils.searchFileFromEnd(HBaseShellPro.HISTORY_FILE, foundLine);
         } catch (IOException e) {
             // OK, history file not found
             return;
@@ -108,7 +108,7 @@ public class Task_history extends TaskBase {
         };
 
         try {
-            Utils.searchFileFromEnd(HBShell.HISTORY_FILE, foundLine);
+            Utils.searchFileFromEnd(HBaseShellPro.HISTORY_FILE, foundLine);
         } catch (IOException e) {
             // OK, history file not found
         }

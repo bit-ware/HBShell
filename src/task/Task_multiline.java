@@ -2,7 +2,7 @@ package task;
 
 import java.io.IOException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 public class Task_multiline extends TaskBase {
     @Override
@@ -56,12 +56,12 @@ public class Task_multiline extends TaskBase {
 
     private void outputMultilineStatus()
     throws IOException {
-        log.info("Current multiline status: " + HBShell.multiline);
+        log.info("Current multiline status: " + HBaseShellPro.multiline);
     }
 
     private void setMultilineStatus(String status)
     throws IOException {
-        HBShell.multiline = Boolean.valueOf(status);
+        HBaseShellPro.multiline = Boolean.valueOf(status);
         outputMultilineStatus();
     }
 }

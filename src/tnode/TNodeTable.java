@@ -2,7 +2,7 @@ package tnode;
 
 import java.io.IOException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hbase.client.HTable;
@@ -31,14 +31,14 @@ public class TNodeTable extends TNodeBase {
 
     @Override
     protected String formatString() {
-        return HBShell.format_table;
+        return HBaseShellPro.format_table;
     }
 
     @Override
     public void output()
     throws IOException, HBSException {
         if (!outputted) {
-            HBShell.increaseCount(HBShell.TABLE);
+            HBaseShellPro.increaseCount(HBaseShellPro.TABLE);
         }
 
         super.output();
@@ -66,7 +66,7 @@ public class TNodeTable extends TNodeBase {
                     new TNodeRow(task, this, table, firstKVResult, toOutput).handle();
 
                     // check row limit
-                    if (HBShell.getCount(HBShell.ROW) >= TaskBase.getRowLimit()) {
+                    if (HBaseShellPro.getCount(HBaseShellPro.ROW) >= TaskBase.getRowLimit()) {
                         throw new HBSExceptionRowLimitReached();
                     }
                 }

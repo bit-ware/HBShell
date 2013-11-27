@@ -3,7 +3,7 @@ package utils;
 import java.io.File;
 import java.io.IOException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
@@ -117,19 +117,19 @@ public class ResultLog {
     }
 
     private static String newLogFilePath() {
-        String lastLogFilePath = getLogFilePath(HBShell.maxResultLogFileCount - 1);
+        String lastLogFilePath = getLogFilePath(HBaseShellPro.maxResultLogFileCount - 1);
 
         if (Utils.fileExists(lastLogFilePath)) {
             Utils.deleteFile(getLogFilePath(0));
 
-            for (int i = 1; i < HBShell.maxResultLogFileCount; i++) {
+            for (int i = 1; i < HBaseShellPro.maxResultLogFileCount; i++) {
                 Utils.renameFile(getLogFilePath(i), getLogFilePath(i - 1));
             }
 
             return lastLogFilePath;
         }
 
-        for (long i = HBShell.maxResultLogFileCount - 2; i >= 0; i--) {
+        for (long i = HBaseShellPro.maxResultLogFileCount - 2; i >= 0; i--) {
             if (Utils.fileExists(getLogFilePath(i))) {
                 return getLogFilePath(i + 1);
             }

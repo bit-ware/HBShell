@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>HBShell</name>
+	<name>HBaseShellPro</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -58,7 +58,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1369670962658</id>
+			<id>0</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
@@ -67,7 +67,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1369670962658</id>
+			<id>0</id>
 			<name></name>
 			<type>26</type>
 			<matcher>
@@ -76,7 +76,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1369670962674</id>
+			<id>0</id>
 			<name></name>
 			<type>6</type>
 			<matcher>

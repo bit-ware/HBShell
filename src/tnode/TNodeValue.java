@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import exception.HBSException;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import task.TaskBase;
 import task.TaskBase.Level;
@@ -18,7 +18,7 @@ public class TNodeValue extends TNodeBase {
 
     @Override
     protected String formatString() {
-        return parent.formatString() + HBShell.format_value;
+        return parent.formatString() + HBaseShellPro.format_value;
     }
 
     @Override
@@ -28,8 +28,8 @@ public class TNodeValue extends TNodeBase {
             return;
         }
 
-        HBShell.increaseCount(HBShell.QUALIFIER);
-        HBShell.increaseCount(HBShell.VALUE);
+        HBaseShellPro.increaseCount(HBaseShellPro.QUALIFIER);
+        HBaseShellPro.increaseCount(HBaseShellPro.VALUE);
 
         if (toOutput) {
             parent.parent.output();
@@ -53,17 +53,17 @@ public class TNodeValue extends TNodeBase {
 
         String value = null;
 
-        if (!Utils.isPrintableData(bValue, HBShell.maxPrintableDetectCnt)) {
-            value = Utils.getHexStringBase(bValue, HBShell.maxHexStringLength.intValue(), true);
+        if (!Utils.isPrintableData(bValue, HBaseShellPro.maxPrintableDetectCnt)) {
+            value = Utils.getHexStringBase(bValue, HBaseShellPro.maxHexStringLength.intValue(), true);
         } else {
-            int length = (int)Math.min(bValue.length, HBShell.maxPrintableDetectCnt);
+            int length = (int)Math.min(bValue.length, HBaseShellPro.maxPrintableDetectCnt);
             value = Utils.bytes2str(bValue, 0, length);
 
-            if (bValue.length > HBShell.maxPrintableDetectCnt) {
+            if (bValue.length > HBaseShellPro.maxPrintableDetectCnt) {
                 value += " ...";
             }
 
-            if (!HBShell.multiline) {
+            if (!HBaseShellPro.multiline) {
                 // show only first line
                 String firstLine = new Scanner(value).nextLine();
 

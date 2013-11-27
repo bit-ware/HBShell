@@ -1,4 +1,4 @@
-# HBShell
+# HBaseShellPro
 
 A simple but powerful replacement for ./hbase shell
 
@@ -6,7 +6,7 @@ A simple but powerful replacement for ./hbase shell
 
 Execute:
 
-    $ wget --no-check-certificate https://codeload.github.com/xxjapp/HBShell/zip/master
+    $ wget --no-check-certificate https://codeload.github.com/bit-ware/HBaseShellPro/zip/master
     $ unzip master
     $ mv HBShell-master HBShell
     $ cd HBShell/
@@ -170,3 +170,10 @@ Execute:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+
+## Author
+Xia Xiongjun
+
+## Sponsor
+BitWare Inc. (http://www.bit-ware.co.jp opensource@bit-ware.co.jp)

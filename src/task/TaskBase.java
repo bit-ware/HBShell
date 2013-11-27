@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import org.apache.hadoop.hbase.client.HTable;
 
@@ -90,7 +90,7 @@ public abstract class TaskBase implements Task {
         String aliasName = "alias_" + getTaskName();
 
         try {
-            Field field = HBShell.class.getField(aliasName);
+            Field field = HBaseShellPro.class.getField(aliasName);
             return (List< ? >)field.get(null);
         } catch (Exception e) {     // all exceptions
             log.warn(null, e);
@@ -104,7 +104,7 @@ public abstract class TaskBase implements Task {
     throws IOException {
         changeLogOnStart();
 
-        if (HBShell.readonly && !isReadOnly()) {
+        if (HBaseShellPro.readonly && !isReadOnly()) {
             throw new IOException("Non-readonly tasks not allowed in readonly mode\nEnter 'help readonly<RETURN>' for more information");
         }
 
@@ -152,14 +152,14 @@ public abstract class TaskBase implements Task {
         this.notifyEnabled = notifyEnabled;
 
         System.out.print("******************************\n");
-        boolean confirmed = HBShell.confirmFor("Sure to " + getTaskType() + "?");
+        boolean confirmed = HBaseShellPro.confirmFor("Sure to " + getTaskType() + "?");
         System.out.print("******************************\n");
 
         return confirmed;
     }
 
     public void resetAllCount() {
-        HBShell.resetAllCount();
+        HBaseShellPro.resetAllCount();
     }
 
     protected void changeLogOnStart() {

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import main.HBShell.SessionMode;
+import main.HBaseShellPro.SessionMode;
 
 import org.apache.commons.logging.Log;
 

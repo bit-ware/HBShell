@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 
-import main.HBShell;
+import main.HBaseShellPro;
 
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
@@ -38,14 +38,14 @@ public class TNodeRow extends TNodeBase {
 
     @Override
     protected String formatString() {
-        return HBShell.format_row;
+        return HBaseShellPro.format_row;
     }
 
     @Override
     public void output()
     throws IOException, HBSException {
         if (!outputted) {
-            HBShell.increaseCount(HBShell.ROW);
+            HBaseShellPro.increaseCount(HBaseShellPro.ROW);
         }
 
         super.output();
@@ -149,7 +149,7 @@ public class TNodeRow extends TNodeBase {
 
     public TNodeFamilyFileData getFamilyFileData(String family, TNodeFamily familyNode)
     throws IOException {
-        if (!HBShell.travelRowFBlockFamilies) {
+        if (!HBaseShellPro.travelRowFBlockFamilies) {
             return null;
         }
 

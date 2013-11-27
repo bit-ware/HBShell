@@ -28,7 +28,7 @@ import utils.ResultLog;
 import utils.RootLog;
 import utils.Utils;
 
-public class HBShell {
+public class HBaseShellPro {
     public static final String HISTORY_FILE = Utils.makePath(RootLog.logDir, "history.txt");
 
     private static final String[] DEFAULT_CMD_ARGS_FOR_SINGLE_SESSION = new String[] {"version"};
