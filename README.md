@@ -1,7 +1,10 @@
 # HBaseShellPro
 
-A simple but powerful replacement for ./hbase shell
-support hbase version : 0.20.4
+A simple but powerful replacement for ./hbase shell <br />
+support hbase version : 0.20.* <br />
+
+HBase 0.94.* Branch: <br />
+<https://github.com/bit-ware/HBaseShellPro/tree/0.94>
 
 
 ## Installation
