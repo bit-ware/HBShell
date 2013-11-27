@@ -1,6 +1,8 @@
 # HBaseShellPro
 
 A simple but powerful replacement for ./hbase shell
+support hbase version : 0.20.4
+
 
 ## Installation
 
