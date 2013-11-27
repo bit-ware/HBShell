@@ -8,8 +8,8 @@ Execute:
 
     $ wget --no-check-certificate https://codeload.github.com/bit-ware/HBaseShellPro/zip/master
     $ unzip master
-    $ mv HBShell-master HBShell
-    $ cd HBShell/
+    $ mv HBaseShellPro-master HBaseShellPro
+    $ cd HBaseShellPro/
     $ chmod +x run.rb
     $ ./run.rb
 
